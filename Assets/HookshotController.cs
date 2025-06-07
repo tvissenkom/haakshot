@@ -1,17 +1,19 @@
 using UnityEngine;
 
-public class HookshotController : MonoBehaviour
+public class PhysicsGrapple : MonoBehaviour
 {
     public LineRenderer lineRenderer;
     public float hookSpeed = 20f;
-    public float pullSpeed = 10f;
     public float maxHookDistance = 10f;
+    public float pullForce = 30f;
     public LayerMask hookableLayers;
+    public float stopPullDistance = 1f;
 
     private Vector2 hookTarget;
     private bool isHookFlying = false;
-    private bool isPullingPlayer = false;
+    private bool isPulling = false;
     private bool hookHitSomething = false;
+
     private Rigidbody2D rb;
 
     void Start()
@@ -24,32 +26,12 @@ public class HookshotController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            // Cancel any existing hook or pull
+            FireHook();
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
             CancelHook();
-
-            // Start a new hookshot
-            Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 direction = (mouseWorldPos - (Vector2)transform.position).normalized;
-            Vector2 maxPoint = (Vector2)transform.position + direction * maxHookDistance;
-
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, maxHookDistance, hookableLayers);
-
-            if (hit.collider != null)
-            {
-                hookTarget = hit.point;
-                hookHitSomething = true;
-            }
-            else
-            {
-                hookTarget = maxPoint;
-                hookHitSomething = false;
-            }
-
-            isHookFlying = true;
-            lineRenderer.enabled = true;
-            lineRenderer.positionCount = 2;
-            lineRenderer.SetPosition(0, transform.position);
-            lineRenderer.SetPosition(1, transform.position);
         }
 
         if (isHookFlying)
@@ -63,32 +45,65 @@ public class HookshotController : MonoBehaviour
 
                 if (hookHitSomething)
                 {
-                    isPullingPlayer = true;
+                    isPulling = true;
                 }
                 else
                 {
-                    lineRenderer.enabled = false;
+                    CancelHook();
                 }
             }
         }
 
-        if (isPullingPlayer)
+        if (isPulling)
         {
-            rb.MovePosition(Vector2.MoveTowards(rb.position, hookTarget, pullSpeed * Time.deltaTime));
-            lineRenderer.SetPosition(0, transform.position);
+            Vector2 direction = (hookTarget - rb.position).normalized;
+            float distance = Vector2.Distance(rb.position, hookTarget);
 
-            if (Vector2.Distance(rb.position, hookTarget) < 0.5f)
+            if (distance < stopPullDistance)
             {
-                isPullingPlayer = false;
-                lineRenderer.enabled = false;
+                CancelHook();
+                return;
             }
+
+            rb.AddForce(direction * pullForce);
+
+            lineRenderer.SetPosition(0, transform.position);
+            lineRenderer.SetPosition(1, hookTarget);
         }
+    }
+
+    private void FireHook()
+    {
+        CancelHook();
+
+        Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 dir = (mouseWorld - rb.position).normalized;
+        Vector2 maxPoint = rb.position + dir * maxHookDistance;
+
+        RaycastHit2D hit = Physics2D.Raycast(rb.position, dir, maxHookDistance, hookableLayers);
+
+        if (hit.collider != null)
+        {
+            hookTarget = hit.point;
+            hookHitSomething = true;
+        }
+        else
+        {
+            hookTarget = maxPoint;
+            hookHitSomething = false;
+        }
+
+        isHookFlying = true;
+        lineRenderer.enabled = true;
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, transform.position);
     }
 
     private void CancelHook()
     {
         isHookFlying = false;
-        isPullingPlayer = false;
+        isPulling = false;
         hookHitSomething = false;
         lineRenderer.enabled = false;
     }
