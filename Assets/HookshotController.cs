@@ -37,6 +37,7 @@ public class PhysicsGrapple : MonoBehaviour
         if (isHookFlying)
         {
             Vector2 currentEnd = Vector2.MoveTowards(lineRenderer.GetPosition(1), hookTarget, hookSpeed * Time.deltaTime);
+            lineRenderer.SetPosition(0, transform.position);
             lineRenderer.SetPosition(1, currentEnd);
 
             if (Vector2.Distance(currentEnd, hookTarget) < 0.1f)
