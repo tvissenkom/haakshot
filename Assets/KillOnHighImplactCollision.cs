@@ -30,7 +30,7 @@ public class KillOnHighImpactCollision : MonoBehaviour
             // Get direction of impact
             Vector2 impactDirection = collision.relativeVelocity.normalized;
 
-            screenShakeController.Shake(5,1);
+            screenShakeController.Shake(0.5f,0.5f);
 
             // Instantiate blood particles with opposite rotation
             Quaternion bloodRotation = Quaternion.FromToRotation(Vector2.right, -impactDirection);
