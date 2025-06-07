@@ -5,25 +5,43 @@ public class KillOnHighImpactCollision : MonoBehaviour
     [Tooltip("Minimum collision velocity magnitude to trigger death")]
     public float velocityThreshold = 5f;
 
-    // Called when this collider/rigidbody has begun touching another rigidbody/collider
-    private void OnCollisionEnter2D(Collision2D collision)
+    [Tooltip("Blood particle prefab to spawn on death")]
+    public GameObject bloodParticles;
+
+    private Vector3 startPosition;
+    private PhysicsGrapple hookshotController;
+    private ScreenShakeController screenShakeController;
+
+    private void Awake()
     {
-        // Check the relative velocity magnitude of the collision
-        if (collision.relativeVelocity.magnitude > velocityThreshold)
-        {
-            KillPlayer();
-        }
+        hookshotController = GetComponent<PhysicsGrapple>();
+        screenShakeController = GetComponent<ScreenShakeController>();
     }
 
-    private void KillPlayer()
+    private void Start()
     {
-        Debug.Log("Player killed due to high impact collision!");
+        startPosition = transform.position;
+    }
 
-        // Example 1: Destroy the player GameObject
-        Destroy(gameObject);
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.relativeVelocity.magnitude > velocityThreshold)
+        {
+            // Get direction of impact
+            Vector2 impactDirection = collision.relativeVelocity.normalized;
 
-        // Example 2: Alternatively, you could disable controls, play death animation, etc.
-        // For example: GetComponent<PlayerController>().enabled = false;
-        // Or invoke a death event if you have one
+            screenShakeController.Shake(5,1);
+
+            // Instantiate blood particles with opposite rotation
+            Quaternion bloodRotation = Quaternion.FromToRotation(Vector2.right, -impactDirection);
+            Instantiate(bloodParticles, transform.position, bloodRotation);
+
+            //Reset sidersilk
+            hookshotController.CancelHook();
+
+            // Reset player position or handle death logic
+            Debug.Log("Player killed due to high impact collision!");
+            transform.position = startPosition;
+        }
     }
 }
