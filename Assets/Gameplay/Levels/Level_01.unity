@@ -551,6 +551,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8039388709741453967, guid: 6235dad1f24fab842890435a2af6f578, type: 3}
+      propertyPath: orthographic size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8039388709741453967, guid: 6235dad1f24fab842890435a2af6f578, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.27450982
+      objectReference: {fileID: 0}
+    - target: {fileID: 8039388709741453967, guid: 6235dad1f24fab842890435a2af6f578, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.27450982
+      objectReference: {fileID: 0}
+    - target: {fileID: 8039388709741453967, guid: 6235dad1f24fab842890435a2af6f578, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.27450982
+      objectReference: {fileID: 0}
     - target: {fileID: 8860667078817269786, guid: 6235dad1f24fab842890435a2af6f578, type: 3}
       propertyPath: player
       value: 
@@ -1350,7 +1366,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1145175497219159701, guid: 90c11bd1a09bee442b9fb90d7d123505, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.53
+      value: 4.98
       objectReference: {fileID: 0}
     - target: {fileID: 1145175497219159701, guid: 90c11bd1a09bee442b9fb90d7d123505, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1388,6 +1404,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1274562021538115590, guid: 90c11bd1a09bee442b9fb90d7d123505, type: 3}
+      propertyPath: bloodParticles
+      value: 
+      objectReference: {fileID: 3037685385265702943, guid: 641c0232c22ed4c4f8ee864234c76f8a, type: 3}
     - target: {fileID: 2823886189458298173, guid: 90c11bd1a09bee442b9fb90d7d123505, type: 3}
       propertyPath: m_Name
       value: PF_Player
