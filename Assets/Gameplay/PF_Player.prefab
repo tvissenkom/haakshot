@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 3997469088183465519}
   - component: {fileID: 1874960552265795864}
   - component: {fileID: 5533706942524492893}
+  - component: {fileID: 1274562021538115590}
+  - component: {fileID: 214187400847902927}
   m_Layer: 6
   m_Name: PF_Player
   m_TagString: Untagged
@@ -287,3 +289,31 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &1274562021538115590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2823886189458298173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aec6babc53541024984a73b83f75bf8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocityThreshold: 15
+  bloodParticles: {fileID: 1645593015866045296, guid: 24259191a6bc21341ae610cc8f2d604b, type: 3}
+--- !u!114 &214187400847902927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2823886189458298173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a4b1f206d7db344997acccb0e7491b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shakeIntensity: 0.5
+  shakeDuration: 0.5

@@ -38,7 +38,7 @@ public class PhysicsGrapple : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (!isHookFlying && !isPulling) // Prevent re-firing while already pulling
+            if (!isHookFlying) // Prevent re-firing while already pulling
             {
                 FireHook();
             }
@@ -169,7 +169,7 @@ public class PhysicsGrapple : MonoBehaviour
         lineRenderer.SetPosition(1, rb.position);
     }
 
-    private void CancelHook()
+    public void CancelHook()
     {
         isHookFlying = false;
         isPulling = false;
