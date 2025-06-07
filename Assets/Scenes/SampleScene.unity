@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 448017853}
   - component: {fileID: 448017852}
   - component: {fileID: 448017851}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Square (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1080,6 +1080,9 @@ MonoBehaviour:
   hookableLayers:
     serializedVersion: 2
     m_Bits: 55
+  unhookableLayers:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!50 &1709968455
 Rigidbody2D:
   serializedVersion: 5

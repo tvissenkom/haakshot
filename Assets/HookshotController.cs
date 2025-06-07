@@ -9,6 +9,7 @@ public class PhysicsGrapple : MonoBehaviour
     public float objectPullForce = 20f;
     public float stopPullDistance = 1f;
     public LayerMask hookableLayers;
+    public LayerMask unhookableLayers;
 
     private Vector2 hookTarget;
     private bool isHookFlying = false;
@@ -28,7 +29,10 @@ public class PhysicsGrapple : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            FireHook();
+            if (!isHookFlying)
+            {
+                FireHook();
+            }
         }
 
         if (Input.GetMouseButtonDown(1))
@@ -101,10 +105,22 @@ public class PhysicsGrapple : MonoBehaviour
         Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 dir = (mouseWorld - rb.position).normalized;
 
-        RaycastHit2D hit = Physics2D.Raycast(rb.position, dir, maxHookDistance, hookableLayers);
+        // Combine the two masks so we hit both hookable and unhookable
+        LayerMask combinedMask = hookableLayers | unhookableLayers;
+
+        RaycastHit2D hit = Physics2D.Raycast(rb.position, dir, maxHookDistance, combinedMask);
 
         if (hit.collider != null)
         {
+            // Check if hit is on an unhookable layer
+            if (((1 << hit.collider.gameObject.layer) & unhookableLayers) != 0)
+            {
+                // Immediately cancel the hook if hit unhookable
+                CancelHook();
+                return;
+            }
+
+            // Else, normal hookable logic
             hookTarget = hit.point;
             hookHitSomething = true;
 
