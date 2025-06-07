@@ -8,6 +8,11 @@ public class PhysicsGrapple : MonoBehaviour
     public float pullForce = 30f;
     public float objectPullForce = 20f;
     public float stopPullDistance = 1f;
+
+    // New variables for acceleration
+    public float pullAcceleration = 10f;
+    public float maxPullForce = 100f;
+
     public LayerMask hookableLayers;
     public LayerMask unhookableLayers;
 
@@ -15,9 +20,13 @@ public class PhysicsGrapple : MonoBehaviour
     private bool isHookFlying = false;
     private bool isPulling = false;
     private bool hookHitSomething = false;
+    private bool grabbedUnhookable = false;
 
     private Rigidbody2D rb;
     private Rigidbody2D hookedRigidbody; // Target being pulled
+
+    // Variable to track the current force
+    private float currentPullForce;
 
     void Start()
     {
@@ -29,7 +38,7 @@ public class PhysicsGrapple : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (!isHookFlying)
+            if (!isHookFlying && !isPulling) // Prevent re-firing while already pulling
             {
                 FireHook();
             }
@@ -52,7 +61,17 @@ public class PhysicsGrapple : MonoBehaviour
 
                 if (hookHitSomething)
                 {
-                    isPulling = true;
+                    if (!grabbedUnhookable)
+                    {
+                        isPulling = true;
+                        // Reset the pull force each time we start pulling
+                        currentPullForce = pullForce;
+                    }
+                    else
+                    {
+                        grabbedUnhookable = false;
+                        CancelHook();
+                    }
                 }
                 else
                 {
@@ -63,6 +82,14 @@ public class PhysicsGrapple : MonoBehaviour
 
         if (isPulling)
         {
+            // Check if the pull button is being held to apply acceleration
+            if (Input.GetMouseButton(0))
+            {
+                // Increase the pull force over time
+                currentPullForce += pullAcceleration * Time.deltaTime;
+                currentPullForce = Mathf.Min(currentPullForce, maxPullForce); // Clamp to the max force
+            }
+
             if (hookedRigidbody != null)
             {
                 // Pull the object toward the player
@@ -75,7 +102,8 @@ public class PhysicsGrapple : MonoBehaviour
                     return;
                 }
 
-                hookedRigidbody.AddForce(dir * objectPullForce);
+                // Apply the current (accelerated) force
+                hookedRigidbody.AddForce(dir * currentPullForce);
                 lineRenderer.SetPosition(0, rb.position);
                 lineRenderer.SetPosition(1, hookedRigidbody.position);
             }
@@ -91,7 +119,8 @@ public class PhysicsGrapple : MonoBehaviour
                     return;
                 }
 
-                rb.AddForce(dir * pullForce);
+                // Apply the current (accelerated) force
+                rb.AddForce(dir * currentPullForce);
                 lineRenderer.SetPosition(0, rb.position);
                 lineRenderer.SetPosition(1, hookTarget);
             }
@@ -116,8 +145,7 @@ public class PhysicsGrapple : MonoBehaviour
             if (((1 << hit.collider.gameObject.layer) & unhookableLayers) != 0)
             {
                 // Immediately cancel the hook if hit unhookable
-                CancelHook();
-                return;
+                grabbedUnhookable = true;
             }
 
             // Else, normal hookable logic
